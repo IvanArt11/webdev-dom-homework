@@ -7,7 +7,6 @@ const comments = document.querySelector('.comments');
 const button = document.querySelector('.add-form-button');
 // const buttonElement = document.getElementById("add-button");
 
-
 // Добавление и формирование даты и времени
 const getDate = () => {
     const date = new Date();

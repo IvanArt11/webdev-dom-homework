@@ -7,6 +7,105 @@ const comments = document.querySelector('.comments');
 const button = document.querySelector('.add-form-button');
 // const buttonElement = document.getElementById("add-button");
 
+// Добавление массива комментариев
+const commentsArr = [
+    {
+        name: "Глеб Фокин",
+        text: "Это будет первый комментарий на этой странице",
+        date: "12.02.22 12:18",
+        likeCounter: 3,
+        isLike: false,
+        isEdit: false,
+    },
+    {
+        name: "Варвара Н.",
+        text: "Мне нравится как оформлена эта страница! ❤",
+        date: "13.02.22 19:22",
+        likeCounter: 75,
+        isLike: true,
+        isEdit: false,
+    }
+];
+
+// Рендеринг комментария
+const renderComment = (name, text, date, isLike, likeCounter, isEdit, index) => {
+    comments.innerHTML += 
+        `<li class="comment">
+            <div class="comment-header">
+            <div>${name}</div>
+            <div>${date}</div>
+            </div>
+            <div class="comment-body">
+                ${isEdit ? `<textArea data-index="${index}" class="input-text">${text}</textArea>` : `<div class="comment-text">${text}</div>`}
+                <button data-index="${index}" class="edit-button">${isEdit ? "Сохранить" : "Редактировать"}</button>
+            </div>
+            <div class="comment-footer">
+            <div class="likes">
+                <span class="likes-counter">${likeCounter}</span>
+                <button data-index="${index}" class="like-button ${isLike ? '-active-like': ''}"></button>
+            </div>
+            </div>
+        </li>`;
+}
+
+// Редакитрование комментария
+const eventEdit = () => {
+    document.querySelectorAll('.edit-button').forEach(button => {
+        button.addEventListener('click', () => {
+            commentObj = commentsArr[button.dataset.index];
+            if (commentObj.isEdit) {
+                // Исключаем возможность сохранения комментария без текста 
+                if (commentObj.text.trim() === '') return;
+                button.innerHTML = "Редактировать";
+                commentObj.isEdit = false;
+            } else {
+                button.innerHTML = "Сохранить";
+                commentObj.isEdit = true;
+            }
+            renderAllComments();
+        })
+    })
+}
+
+// Редактирование и запись нового (отредактированного) комментария
+const evenEditInput = () => {
+    document.querySelectorAll('.input-text').forEach(input => {
+        input.addEventListener('keyup', (key) => {
+            commentObj = commentsArr[input.dataset.index];
+            commentObj.text = input.value;
+        })
+    })
+}
+
+// Отрисовка всех комментариев
+const renderAllComments = () => {
+    comments.innerHTML = '';
+    commentsArr.forEach((comment, index) => renderComment(comment.name, comment.text, comment.date, comment.isLike, comment.likeCounter, comment.isEdit, index));
+
+    eventEdit();
+    evenEditInput();
+    eventLike();
+}
+
+// Кликабельность лайка
+const eventLike = () => {
+    document.querySelectorAll('.like-button').forEach(button => {
+        button.addEventListener('click', () => {
+            commentObj = commentsArr[button.dataset.index];
+            if (commentObj.isLike){
+                commentObj.likeCounter -= 1; 
+                commentObj.isLike = false;
+
+            } else {
+                commentObj.likeCounter += 1; 
+                commentObj.isLike = true;
+            }
+        
+            renderAllComments();
+        })
+    });
+}
+
 // Добавление и формирование даты и времени
 const getDate = () => {
     const date = new Date();
@@ -18,32 +117,22 @@ const getDate = () => {
 
     return `${day}.${month}.${year} ${hours}:${minutes}`;
 }
- 
+
 const sendComment = () => {
     // проверка на пустые поля и добавление метода trim(), который удаляет пробельные символы с начала и конца строки.
     if (inputName.value.trim() === '' || inputText.value.trim() === '') {
         return;
     }
 
-    comments.innerHTML += 
-    `   <li class="comment">
-            <div class="comment-header">
-                <div>${inputName.value}</div>
-                <div>${getDate()}</div>
-            </div>
-            <div class="comment-body">
-                <div class="comment-text">
-                    ${inputText.value}
-                </div>
-            </div>
-            <div class="comment-footer">
-                <div class="likes">
-                    <span class="likes-counter">0</span>
-                    <button class="like-button"></button>
-                </div>
-            </div>
-        </li>
-    `;
+    commentsArr.push({        
+        name: inputName.value,
+        text: inputText.value,
+        date: getDate(new Date),
+        likeCounter: 0,
+        like: false,
+    })
+
+    renderAllComments();
 
     inputName.value = '';
     inputText.value = '';
@@ -68,8 +157,7 @@ inputText.addEventListener('keydown', (key) => {
     };
 })
 
-// В случае, если пользователь напишет сообщение, а затем его решит стереть. Добавление else.  
-
+// Если пользователь напишет сообщение, а затем его решит стереть.
 const switchButton = () => {
     if (inputName.value.trim() !== '' && inputText.value.trim() !== '') {
         button.classList.add('active');
@@ -83,8 +171,17 @@ const switchButton = () => {
 inputText.addEventListener('input', switchButton);
 inputName.addEventListener('input', switchButton);
 
-// Удаление последнего комментария
+// Удаление последнего комментария...
 document.querySelector('.del-last-comment').addEventListener('click', () => {
-    const indexLast = comments.innerHTML.lastIndexOf('<li class="comment">');
+    const indexLast = comments.innerHTML.lastIndexOf('<li class="comment">')
     comments.innerHTML = comments.innerHTML.slice(0, indexLast);
-});
+
+    //... в том числе удаление и из массива
+    commentsArr.pop();
+    
+    eventEdit();
+    evenEditInput();
+    eventLike();
+})
+
+renderAllComments();

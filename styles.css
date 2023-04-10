@@ -158,3 +158,31 @@ body {
     background-color: grey;
     cursor: auto;
   }
+
+  .input-text{
+    box-sizing: border-box;
+    display: block;
+    border-radius: 20px;
+    font-family: Helvetica;
+    font-size: 32px;
+    padding: 5px;
+    width: 500px;
+    height: 100px;
+    resize: none;
+    outline: none;
+  }
+
+  .edit-button {
+    border-radius: 18px;
+    border: none;
+    margin-top: 24px;
+    padding: 10px 20px;
+    font-family: Helvetica;
+    font-size: 16px;
+    background-color: #bcec30;
+    cursor: pointer;
+  }
+
+  .edit-button:hover {
+    opacity: 0.9;
+  }

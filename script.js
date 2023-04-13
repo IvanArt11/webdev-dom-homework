@@ -90,7 +90,7 @@ const eventReply = () => {
 }
 
 // Редактирование и запись нового (отредактированного) комментария
-const evenEditInput = () => {
+const eventEditInput = () => {
     document.querySelectorAll('.input-text').forEach(input => {
         input.addEventListener('keyup', (key) => {
             commentObj = commentsArr[input.dataset.index];
@@ -110,7 +110,7 @@ const renderAllComments = () => {
     commentsArr.forEach((comment, index) => renderComment(comment.name, comment.text, comment.date, comment.isLike, comment.likeCounter, comment.isEdit, index));
 
     eventEdit();
-    evenEditInput();
+    eventEditInput();
     eventLike();
     eventReply();
 }
@@ -222,7 +222,7 @@ document.querySelector('.del-last-comment').addEventListener('click', () => {
     commentsArr.pop();
     
     eventEdit();
-    evenEditInput();
+    eventEditInput();
     eventLike();
     eventReply();
 })

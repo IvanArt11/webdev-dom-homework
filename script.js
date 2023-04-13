@@ -76,8 +76,6 @@ const eventReply = () => {
             commentObj = commentsArr[item.dataset.index];
             let str = commentObj.text;
 
-            // в случае если у нас будет reply на reply, мы оставим только ответ
-            // Если будет несколько reply
             while (str.indexOf("<div class='quote'>") !== -1) { 
                 const substr = str.substring(0, str.indexOf('</div>') + '</div>'.length);
                 str = str.replace(substr, '');

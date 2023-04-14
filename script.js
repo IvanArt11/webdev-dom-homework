@@ -221,10 +221,7 @@ document.querySelector('.del-last-comment').addEventListener('click', () => {
     //... в том числе удаление и из массива
     commentsArr.pop();
     
-    eventEdit();
-    eventEditInput();
-    eventLike();
-    eventReply();
+    renderAllComments();
 })
 
 renderAllComments();

@@ -195,3 +195,12 @@ body {
     margin-bottom: 20px;
     padding: 18px;
   }
+
+  .preloader {
+    display: none;
+    margin: 20px;
+  }
+
+  .--ON {
+    display: block;
+  }

@@ -214,11 +214,11 @@ inputText.addEventListener("keydown", (key) => {
 const switchButton = () => {
     // Проверка на > 3 так как в другом случае api даст ошибку
     if (inputName.value.trim().length > 3 && inputText.value.trim().length > 3) {
-        buttonAdd.classList.add("active");
-        buttonAdd.classList.remove("inactive");
+        button.classList.add("active");
+        button.classList.remove("inactive");
     } else {
-        buttonAdd.classList.add("inactive");
-        buttonAdd.classList.remove("active");
+        button.classList.add("inactive");
+        button.classList.remove("active");
     }
 };
 

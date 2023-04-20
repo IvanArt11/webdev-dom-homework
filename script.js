@@ -43,7 +43,7 @@ const eventLike = () => {
             // отключение всплытия у события через stopPropagation
             event.stopPropagation();
 
-            commentObj = commentsArr[button.dataset.index];
+            const commentObj = commentsArr[button.dataset.index];
             if (commentObj.isLiked){
                 commentObj.likes -= 1; 
                 commentObj.isLiked = false;
@@ -65,7 +65,7 @@ const eventEdit = () => {
             // отключение всплытия у события через stopPropagation
             event.stopPropagation();
 
-            commentObj = commentsArr[button.dataset.index];
+            const commentObj = commentsArr[button.dataset.index];
             if (commentObj.isEdit) {
                 // Исключаем возможность сохранения комментария без текста 
                 if (commentObj.text.trim() === "") return;

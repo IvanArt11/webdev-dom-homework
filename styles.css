@@ -94,7 +94,7 @@ body {
   .add-form {
     padding: 20px;
     margin-top: 48px;
-    display: flex;
+    display: none;
     flex-direction: column;
   }
 
@@ -202,5 +202,25 @@ body {
   }
 
   .--ON {
-    display: block;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(30deg);;
+    }
+    75% {
+      transform: rotate(-30deg);;
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+
+  .-loading-like {
+    animation: rotating 2s linear infinite;
   }

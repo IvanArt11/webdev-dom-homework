@@ -208,8 +208,8 @@ function sendComment() {
 
 // Рендеринг комментария
 const renderComment = (id, name, text, date, isLiked, likeCounter, isEdit) => {
-  comments.innerHTML += ` 
-        <li class="comment" data-index="${id}">
+  comments.innerHTML +=  
+        `<li class="comment" data-index="${id}">
             <div class="comment-header">
             <div>${name}</div>
             <div>${date}</div>

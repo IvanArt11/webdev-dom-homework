@@ -153,14 +153,13 @@ const getComments = () => {
   fetch("https://webdev-hw-api.vercel.app/api/v1/Ivan_Art/comments", {
     method: "GET",
   })
-  .then((response) => response.json()
-  .then((data) => {
-      commentsArr = data.comments;
-      renderAllComments();
-      preloader.classList.remove("--ON");
-      addForm.classList.add("--ON");
-    })
-  );
+    .then((response) => response.json())
+    .then((data) => {
+        commentsArr = data.comments;
+        renderAllComments();
+        preloader.classList.remove("--ON");
+        addForm.classList.add("--ON");
+      });
 };
 
 function sendComment() {
@@ -191,13 +190,13 @@ function sendComment() {
         .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
         .replaceAll("QUOTE_END", "</div>"),
     })
-  }).then((response) => response.json()
+  })
+    .then((response) => response.json())
     .then((data) => {
       if (data.result === "ok") {
           getComments();
       }
-  })
-);
+    });
 
   inputName.value = "";
   inputText.value = "";

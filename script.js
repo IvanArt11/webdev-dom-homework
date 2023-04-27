@@ -165,8 +165,8 @@ const getComments = () => {
 function sendComment() {
     // проверка на пустые поля и добавление метода trim(), который удаляет пробельные символы с начала и конца строки.
     if (
-    inputName.value.trim().length <= 3 ||
-    inputText.value.trim().length <= 3
+    inputName.value.trim().length === 0 ||
+    inputText.value.trim().length === 0
   ) {
     return;
   }
@@ -189,21 +189,46 @@ function sendComment() {
         .replaceAll('"', "&quot;")
         .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
         .replaceAll("QUOTE_END", "</div>"),
+        forceError: true, //Добавлено для появления ошибки 500
     })
   })
-    .then((response) => response.json())
+    .then((response) => {
+    if (response.status === 201) {
+        return response.json();
+    } else if (response.status === 400) {
+        throw new Error("400");
+        // return Promise.reject("Имя и комментарий должны быть не короче 3 символов")
+    } else if (response.status === 500) {
+        throw new Error("500");
+        // return Promise.reject("Сервер упал")
+    } else {
+        throw new Error("Неполадки с интернетом");
+        // return Promise.reject("Неполадки с интернетом")
+    }
+    })
     .then((data) => {
       if (data.result === "ok") {
-          getComments();
+            getComments();
+            inputName.value = "";
+            inputText.value = "";
+            // Кнопка снова становится неактивной после добавления комментария, т.к. все поля пустые
+            switchButton();
       }
-    });
-
-  inputName.value = "";
-  inputText.value = "";
-
-  // Кнопка снова становится неактивной после добавления комментария, т.к. все поля пустые
-  switchButton();
-};
+    })
+    .catch((error) => {
+        if (error.message === "500") {
+            console.log("Сервер упал");
+            return sendComment();
+        } else if (error.message === "400") {
+            alert("Имя и комментарий должны быть не короче 3 символов");
+        } else {
+          alert("Кажется, у вас сломался интернет, попробуйте позже");
+        }
+        console.warn(error);
+        preloader.classList.remove("--ON");
+        addForm.classList.add("--ON");
+      });
+  };
 
 // Рендеринг комментария
 const renderComment = (id, name, text, date, isLiked, likeCounter, isEdit) => {
@@ -258,7 +283,10 @@ const renderAllComments = () => {
 // Если пользователь напишет сообщение, а затем его решит стереть.
 function switchButton () {
   // Проверка на > 3 так как в другом случае api даст ошибку
-  if (inputName.value.trim().length > 3 && inputText.value.trim().length > 3) {
+  if (
+    inputName.value.trim().length !== 0 &&
+    inputText.value.trim().length !== 0
+  ){
     button.classList.add("active");
     button.classList.remove("inactive");
   } else {

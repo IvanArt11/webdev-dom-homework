@@ -1,5 +1,6 @@
 const url = "https://webdev-hw-api.vercel.app/api/v2/Ivan_Art";
 
+// Получение всех комментариев из API
 const getCommentsApi = (login) => {
   return fetch(url + "/comments", {
     method: "GET",
@@ -30,7 +31,6 @@ const postCommentsApi = (inputText, token) => {
       return response.json();
     } else if (response.status === 400) {
       throw Error("400");
-      // тут должен быть код для записи ошибки в логи
     } else {
       throw Error();
     }

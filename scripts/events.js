@@ -2,6 +2,7 @@ import { commentsArr } from "./script.js";
 import { renderAllComments } from "./render.js";
 import { postLikeApi } from "./api.js";
 
+// Функция для имитации запросов в API
 const delay = (interval = 300) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -10,10 +11,12 @@ const delay = (interval = 300) => {
   });
 };
 
+// Кликабельность лайка
 const eventLike = (comments, token) => {
   comments.forEach((comment) => {
     const button = comment.querySelector(".like-button");
     button.addEventListener("click", (event) => {
+      // отключение всплытия у события через stopPropagation
       event.stopPropagation();
       commentsArr.forEach((itemComment) => {
         if (itemComment.id == comment.dataset.id) {
@@ -68,6 +71,22 @@ const eventReply = (comments, inputText) => {
   });
 };
 
+export function getEvent() {
+  const comments = document.querySelectorAll(".comment");
+  const inputText = document.querySelector(".add-form-text");
+  const login = !localStorage.getItem("login")
+    ? {
+        login: "",
+        password: "",
+        token: "",
+        name: "",
+      }
+    : JSON.parse(localStorage.getItem("login"));
+
+  eventLike(comments, login.token);
+  eventReply(comments, inputText);
+}
+
 /*
 // Редакитрование комментария
 const eventEdit = () => {
@@ -107,19 +126,3 @@ const eventEditInput = () => {
     });
 };
 */
-
-export function getEvent() {
-  const comments = document.querySelectorAll(".comment");
-  const inputText = document.querySelector(".add-form-text");
-  const login = !localStorage.getItem("login")
-    ? {
-        login: "",
-        password: "",
-        token: "",
-        name: "",
-      }
-    : JSON.parse(localStorage.getItem("login"));
-
-  eventLike(comments, login.token);
-  eventReply(comments, inputText);
-}

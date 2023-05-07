@@ -1,6 +1,6 @@
-import { commentsArr } from "./script.js";
+import { commentsArr, getDate } from "./script.js";
 
-const getDate = (date) => {
+/*const getDate = (date) => {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear().toString().slice(-2);
@@ -8,8 +8,9 @@ const getDate = (date) => {
   const minutes = date.getMinutes().toString().padStart(2, "0");
 
   return `${day}.${month}.${year} ${hours}:${minutes}`;
-};
+};*/
 
+// Рендеринг комментария
 const renderComment = (comment) => {
   return ` 
           <li class="comment" data-id="${comment.id}">

@@ -4,6 +4,21 @@ import { getEvent } from "./events.js";
 import { authComponent, registerApi, loginApi } from "./Authorization.js";
 
 const container = document.querySelector(".container");
+
+// Добавление массива комментариев
+let commentsArr = [];
+
+// Добавление и формирование даты и времени
+const getDate = (date) => {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString().slice(-2);
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+};
+
 const login = !localStorage.getItem("login")
   ? {
       login: "",
@@ -20,8 +35,8 @@ let isAuthorized = Boolean(localStorage.getItem("isAuthorized") === "true");
 const renderApp = () => {
   container.innerHTML = `
     <div class="preloader">
-          <p>Подождите, идет загрузка </p>
-          <img class="preload" src="https://pear-advert.ru/images/uploads/blog/273/new-loading.gif" alt="preloader">
+        <p>Подождите, идет загрузка </p>
+        <img class="preload" src="https://pear-advert.ru/images/uploads/blog/273/new-loading.gif" alt="preloader">
     </div>
     ${display === "none" ? `<ul class="comments"></ul>` : ""}
     ${
@@ -51,6 +66,7 @@ const renderApp = () => {
   `;
 };
 
+// Получение всех комментариев из API
 const getComments = () => {
   preloader.classList.add("--ON");
   if (isAuthorized) {
@@ -87,6 +103,7 @@ const sendComment = () => {
       if (data.result === "ok") {
         getComments();
         inputText.value = "";
+        // Кнопка снова становится неактивной после добавления комментария, т.к. все поля пустые
         switchButton();
       }
     })
@@ -105,8 +122,11 @@ const sendComment = () => {
     });
 };
 
+// Если пользователь напишет сообщение, а затем его решит стереть.
 const switchButton = () => {
-  if (inputText.value.trim().length) {
+  // Проверка на > 3 так как в другом случае api даст ошибку
+  if (inputText.value.trim().length) 
+  {
     buttonAdd.classList.add("active");
     buttonAdd.classList.remove("inactive");
   } else {
@@ -207,7 +227,7 @@ const applicationRegister = () => {
       if (error.message === "400") {
         const error = document.querySelector('.-error');
         error.classList.add('--ON');
-        error.innerHTML = "Такой пользователь уже есть в базе";
+        error.innerHTML = "Такой пользователь уже зарегистрирован";
       } else {
         alert("Что-то не так");
       }
@@ -332,16 +352,13 @@ const setAuthorized = (status) => {
 renderApp();
 const preloader = document.querySelector(".preloader");
 
-//Статичные элементы и эвенты
+//Статичные элементы и ивенты
 let addForm = null;
 let tipsWrap = null;
 let inputText = null;
 let buttonAdd = null;
 getElementAndEvent();
 
-// Добавление массива комментариев
-let commentsArr = [];
-
 getComments();
 
-export { commentsArr, display, isAuthorized };
+export { commentsArr, display, isAuthorized, getDate };

@@ -1,48 +1,54 @@
-// Получение всех комментариев из API
-const getCommentsApi = () => {
-  
-    return fetch("https://webdev-hw-api.vercel.app/api/v1/Ivan_Art/comments", {
-      method: "GET",
-    })
-    .then((response) => response.json())
-};
-  
-const postCommentsApi = () => {
-    const inputName = document.querySelector(".add-form-name");
-    const inputText = document.querySelector(".add-form-text");
-  
-    return fetch("https://webdev-hw-api.vercel.app/api/v1/Ivan_Art/comments", {
-      method: "POST",
-      body: JSON.stringify({
-        name: inputName.value
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;"),
-        text: inputText.value
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
-          .replaceAll("QUOTE_END", "</div>"),
-          forceError: true, //Добавлено для появления ошибки 500
-      })
-    })
-      .then((response) => {
-      if (response.status === 201) {
-          return response.json();
-      } else if (response.status === 400) {
-          throw new Error("400");
-          // return Promise.reject("Имя и комментарий должны быть не короче 3 символов")
-      } else if (response.status === 500) {
-          throw new Error("500");
-          // return Promise.reject("Сервер упал")
-      } else {
-          throw new Error("Неполадки с интернетом");
-          // return Promise.reject("Неполадки с интернетом")
-      }
-      })
+const url = "https://webdev-hw-api.vercel.app/api/v2/Ivan_Art";
+
+const getCommentsApi = (login) => {
+  return fetch(url + "/comments", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${login.token}`,
+    },
+  }).then((response) => response.json());
 };
 
-export { getCommentsApi, postCommentsApi };
+const postCommentsApi = (inputText, token) => {
+  return fetch(url + "/comments", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      text: inputText
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("QUOTE_BEGIN", "<div class='quote'>")
+      .replaceAll("QUOTE_END", "</div>"),
+      /*forceError: true, //Добавлено для появления ошибки 500*/
+    }),
+  }).then((response) => {
+    if (response.status === 201) {
+      return response.json();
+    } else if (response.status === 400) {
+      throw Error("400");
+      // тут должен быть код для записи ошибки в логи
+    } else {
+      throw Error();
+    }
+  });
+};
+
+const postLikeApi = (id, token) => {
+  return fetch(`${url}/comments/${id}/toggle-like`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      throw Error();
+    }
+  });
+};
+export { getCommentsApi, postCommentsApi, postLikeApi };

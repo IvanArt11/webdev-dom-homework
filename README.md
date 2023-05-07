@@ -1,3 +1,5 @@
+Приложение доступно по адресу: https://ivanart11.github.io/webdev-dom-homework/
+
 # Проект "Комментарии"
 
 https://glebkaf.github.io/webdev-dom-homework/

@@ -30,7 +30,7 @@ const renderComment = (comment) => {
               </div>
               </div>
           </li>
-      `;
+        `;
 };
 
 export const renderAllComments = () => {

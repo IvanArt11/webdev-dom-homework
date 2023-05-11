@@ -30,9 +30,9 @@ const postCommentsApi = (inputText, token) => {
     if (response.status === 201) {
       return response.json();
     } else if (response.status === 400) {
-      throw Error("400");
+      throw Error("Имя и комментарий должны быть не короче 3 символов" /*"400"*/);
     } else {
-      throw Error();
+      throw Error("Кажется, у вас сломался интернет, попробуйте позже");
     }
   });
 };
@@ -47,7 +47,7 @@ const postLikeApi = (id, token) => {
     if (response.status === 200) {
       return response.json();
     } else {
-      throw Error();
+      throw Error("Кажется, у вас сломался интернет, попробуйте позже");
     }
   });
 };

@@ -111,7 +111,7 @@ const sendComment = () => {
       if (error.message === "500") {
         console.log("Сервер упал");
         return sendComment();
-      } else if (error.message === "400") {
+      } else if (error.message === "Имя и комментарий должны быть не короче 3 символов" /*"400"*/) {
           alert("Имя и комментарий должны быть не короче 3 символов");
       } else {
         alert("Кажется, у вас сломался интернет, попробуйте позже");
@@ -191,7 +191,7 @@ const applicationLogin = () => {
       localStorage.setItem("login", JSON.stringify(login));
     })
     .catch((error) => {
-      if (error.message === "400") {
+      if (error.message === "Неправильный логин или пароль" /*"400"*/) {
         const error = document.querySelector('.-error');
         error.classList.add('--ON');
         error.innerHTML = "Неправильный логин или пароль";
@@ -224,7 +224,7 @@ const applicationRegister = () => {
       localStorage.setItem("login", JSON.stringify(login));
     })
     .catch((error) => {
-      if (error.message === "400") {
+      if (error.message === "Такой пользователь уже зарегистрирован" /*"400"*/) {
         const error = document.querySelector('.-error');
         error.classList.add('--ON');
         error.innerHTML = "Такой пользователь уже зарегистрирован";

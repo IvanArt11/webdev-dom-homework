@@ -61,7 +61,8 @@ const loginApi = (login) => {
     if (response.status === 201) {
       return response.json();
     } else if (response.status === 400) {
-      throw Error("400");
+      throw Error("Неправильный логин или пароль" /*"400"*/);
+      // return Promise.reject("Неправильный логин или пароль");
     }
   });
 };
@@ -79,7 +80,8 @@ const registerApi = (login) => {
     if (response.status === 201) {
       return response.json();
     } else if (response.status === 400) {
-      throw Error("400");
+      throw Error("Такой пользователь уже зарегистрирован" /*"400"*/);
+      // return Promise.reject("Такой пользователь уже зарегистрирован");
     }
     throw Error();
   });

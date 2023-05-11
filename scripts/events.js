@@ -1,50 +1,93 @@
 import { commentsArr } from "./script.js";
 import { renderAllComments } from "./render.js";
+import { postLikeApi } from "./api.js";
+
+// Функция для имитации запросов в API
+const delay = (interval = 300) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, interval);
+  });
+};
 
 // Кликабельность лайка
-const eventLike = () => {
-    document.querySelectorAll(".like-button").forEach(button => {
-        button.addEventListener("click", (event) => {
-            // отключение всплытия у события через stopPropagation
-            event.stopPropagation();
-  
-            const commentObj = commentsArr[button.dataset.index];
-            
-            // Функция для имитации запросов в API
-            function delay(interval = 300) {
-                return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, interval);
-                });
-            };
+const eventLike = (comments, token) => {
+  comments.forEach((comment) => {
+    const button = comment.querySelector(".like-button");
+    button.addEventListener("click", (event) => {
+      // отключение всплытия у события через stopPropagation
+      event.stopPropagation();
+      commentsArr.forEach((itemComment) => {
+        if (itemComment.id == comment.dataset.id) {
+          button.classList.add("-loading-like");
+          postLikeApi(itemComment.id, token)
+            .then((data) => {
+              delay(2000).then(() => {
+                itemComment.likes = itemComment.isLiked
+                    ? itemComment.likes - 1
+                    : itemComment.likes + 1;
+                itemComment.isLiked = !itemComment.isLiked;
+                itemComment.isLikeLoading = false;
 
-            button.classList.add("-loading-like");
-  
-            delay(2000).then(() => {
-            commentObj.likes = commentObj.isLiked
-                ? commentObj.likes - 1
-                : commentObj.likes + 1;
-            commentObj.isLiked = !commentObj.isLiked;
-            commentObj.isLikeLoading = false;
-            renderAllComments();
-            getEvent();
+                // itemComment.likes = data.result.likes;
+                // itemComment.isLiked = data.result.isLiked;
+                renderAllComments();
+                getEvent();
+              });
+            })
+            .catch(() => {
+              alert("Кажется, у вас сломался интернет, попробуйте позже");
             });
-              
-            // if (commentObj.isLiked){
-            //     commentObj.likes -= 1; 
-            //     commentObj.isLiked = false;
-  
-            // } else {
-            //     commentObj.likes += 1; 
-            //     commentObj.isLiked = true;
-            // }
-        
-            // renderAllComments();
-          })
+        }
+      });
     });
+  });
 };
-  
+
+// ивент на reply комментария
+const eventReply = (comments, inputText) => {
+  comments.forEach((comment) => {
+    comment.addEventListener("click", () => {
+      commentsArr.forEach((itemComment) => {
+        if (itemComment.id == comment.dataset.id) {
+          let str = itemComment.text;
+
+          // цикл на случай, если будет несколько реплаев
+          while (str.indexOf("<div class='quote'>") !== -1) {
+            const substr = str.substring(
+              0,
+              str.indexOf("</div>") + "</div>".length
+            );
+            str = str.replace(substr, "");
+          }
+          inputText.value += `QUOTE_BEGIN ${itemComment.author.name}:\n${str} QUOTE_END\n\n`;
+
+          // переносим пользователя в поле ввода текста
+          inputText.focus();
+        }
+      });
+    });
+  });
+};
+
+export function getEvent() {
+  const comments = document.querySelectorAll(".comment");
+  const inputText = document.querySelector(".add-form-text");
+  const login = !localStorage.getItem("login")
+    ? {
+        login: "",
+        password: "",
+        token: "",
+        name: "",
+      }
+    : JSON.parse(localStorage.getItem("login"));
+
+  eventLike(comments, login.token);
+  eventReply(comments, inputText);
+}
+
+/*
 // Редакитрование комментария
 const eventEdit = () => {
     document.querySelectorAll(".edit-button").forEach((button, key) => {
@@ -67,28 +110,7 @@ const eventEdit = () => {
       });
     });
 };
-  
-// ивент на reply комментария
-const eventReply = () => {
-    const inputText = document.querySelector(".add-form-text");
-    document.querySelectorAll(".comment").forEach((item) => {
-      item.addEventListener("click", () => {
-        const commentObj = commentsArr[item.dataset.index];
-        let str = commentObj.text;
-  
-        while (str.indexOf("<div class='quote'>") !== -1) { 
-          const substr = str.substring(0, str.indexOf("</div>") + "</div>".length);
-          str = str.replace(substr, "");
-        }
-  
-        inputText.value += `QUOTE_BEGIN ${commentObj.author.name}:\n${str} QUOTE_END\n\n`;
-  
-        // переносим пользователя в поле ввода текста
-        inputText.focus();
-      });
-    });
-};
-  
+
 // Редактирование и запись нового (отредактированного) комментария
 const eventEditInput = () => {
     document.querySelectorAll(".input-text").forEach((input) => {
@@ -103,10 +125,4 @@ const eventEditInput = () => {
       });
     });
 };
-
-export function getEvent() {
-    eventLike();
-    eventEdit();
-    eventEditInput();
-    eventReply();
-};
+*/

@@ -1,79 +1,42 @@
-import { getDate, commentsArr } from "./script.js";
+import { commentsArr, getDate } from "./script.js";
 
-const comments = document.querySelector(".comments");
-// const listElement = document.getElementById("list");
+/*const getDate = (date) => {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString().slice(-2);
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+};*/
 
 // Рендеринг комментария
-const renderComment = (comment, index) => {
-    comments.innerHTML +=  
-          `<li class="comment" data-index="${index}">
+const renderComment = (comment) => {
+  return ` 
+          <li class="comment" data-id="${comment.id}">
               <div class="comment-header">
-              <div>${comment.author.name}</div>
-              <div>${getDate(new Date(comment.date))}</div>
+                <div>${comment.author.name}</div>
+                <div>${getDate(new Date(comment.date))}</div>
               </div>
               <div class="comment-body">
-                  ${comment.isEdit 
-                      ? `<textArea data-index="${index}" class="input-text">${comment.text}</textArea>` 
-                      : `<div class="comment-text">${comment.text}</div>`
-                  }
-                  <button data-index="${index}" class="edit-button">
-                  ${comment.isEdit ? "Сохранить" : "Редактировать"}</button>
-              </div>
+              <div class="comment-text">${comment.text}</div>
+              
               <div class="comment-footer">
               <div class="likes">
                   <span class="likes-counter">${comment.likes}</span>
-                  <button data-index="${index}" class="like-button 
-                  ${comment.isLiked ? "-active-like" : ""}"></button>
+                  <button" class="like-button ${
+                    comment.isLiked ? "-active-like" : ""
+                  }"></button>
               </div>
               </div>
-          </li>`;
+          </li>
+        `;
 };
 
-// Old version
-// const renderComment = (id, name, text, date, isLiked, likeCounter, isEdit) => {
-//     comments.innerHTML +=  
-//           `<li class="comment" data-index="${id}">
-//               <div class="comment-header">
-//               <div>${name}</div>
-//               <div>${date}</div>
-//               </div>
-//               <div class="comment-body">
-//                   ${isEdit 
-//                       ? `<textArea data-index="${id}" class="input-text">${text}</textArea>` 
-//                       : `<div class="comment-text">${text}</div>`
-//                   }
-//                   <button data-index="${id}" class="edit-button">
-//                   ${isEdit ? "Сохранить" : "Редактировать"}</button>
-//               </div>
-//               <div class="comment-footer">
-//               <div class="likes">
-//                   <span class="likes-counter">${likeCounter}</span>
-//                   <button data-index="${id}" class="like-button 
-//                   ${isLiked ? "-active-like" : ""}"></button>
-//               </div>
-//               </div>
-//           </li>`;
-//   };
-
-// Отрисовка всех комментариев
 export const renderAllComments = () => {
-    // перед рендером удаляем все комменты которые были, чтобы они не дублировались
-    comments.innerHTML = "";
-  
-    commentsArr.forEach((comment, index) =>
-      renderComment(comment, index)
-    );
-
-    // Old version
-    // commentsArr.forEach((comment, index) =>
-    //     renderComment(
-    //     index,
-    //     comment.author.name,
-    //     comment.text,
-    //     getDate(new Date(comment.date)),
-    //     comment.isLiked,
-    //     comment.likes,
-    //     comment.isEdit
-    //     )
-    // );
+  const comments = document.querySelector(".comments");
+  comments.innerHTML = "";
+  commentsArr.forEach((comment) => {
+    comments.innerHTML += renderComment(comment);
+  });
 };

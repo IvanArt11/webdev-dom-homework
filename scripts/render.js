@@ -1,14 +1,10 @@
-import { commentsArr, getDate } from "./script.js";
+import { commentsArr } from "./script.js";
+import { format } from "date-fns";
 
-/*const getDate = (date) => {
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear().toString().slice(-2);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-
-  return `${day}.${month}.${year} ${hours}:${minutes}`;
-};*/
+// Добавление и формирование даты и времени
+const getDate = (date) => {
+  return format(new Date(date), 'yyyy-MM-dd hh.mm.ss');
+};
 
 // Рендеринг комментария
 const renderComment = (comment) => {
